@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\UserType;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -14,6 +15,13 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/admin/users')]
 class AdminUserController extends AbstractController
 {
+    private UserPasswordHasherInterface $passwordHasher;
+
+    public function __construct(UserPasswordHasherInterface $passwordHasher)
+    {
+        $this->passwordHasher = $passwordHasher;
+    }
+
     #[Route('/', name: 'admin_users')]
     public function index(UserRepository $userRepository): Response
     {
@@ -34,8 +42,15 @@ class AdminUserController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $hashedPassword = $this->passwordHasher->hashPassword(
+                $user,
+                $user->getPassword()
+            );
+            $user->setPassword($hashedPassword);
+
             $entityManager->persist($user);
             $entityManager->flush();
+
             return $this->redirectToRoute('admin_users');
         }
 
@@ -43,7 +58,6 @@ class AdminUserController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
-
     #[Route('/edit/{id}', name: 'admin_users_edit')]
     public function edit(Request $request, User $user, EntityManagerInterface $entityManager): Response
     {
