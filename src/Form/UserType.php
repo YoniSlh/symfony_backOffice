@@ -26,8 +26,8 @@ class UserType extends AbstractType
                 ],
                 'multiple' => true,
                 'expanded' => true,
-            ])
-            ->add('submit', SubmitType::class, ['label' => 'Enregistrer']);
+                'empty_data' => ['ROLE_USER'],
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -24,10 +24,30 @@ class AdminUserController extends AbstractController
         ]);
     }
 
+    #[Route('/new', name: 'admin_users_new')]
+    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        $user = new User();
+        $form = $this->createForm(UserType::class, $user);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($user);
+            $entityManager->flush();
+            return $this->redirectToRoute('admin_users');
+        }
+
+        return $this->render('admin_user/new.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
     #[Route('/edit/{id}', name: 'admin_users_edit')]
     public function edit(Request $request, User $user, EntityManagerInterface $entityManager): Response
     {
-        $this->denyAccessUnlessGranted('USER_EDIT', $user);
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
@@ -43,10 +63,11 @@ class AdminUserController extends AbstractController
         ]);
     }
 
+
     #[Route('/delete/{id}', name: 'admin_users_delete', methods: ['POST'])]
     public function delete(Request $request, User $user, EntityManagerInterface $entityManager): Response
     {
-        $this->denyAccessUnlessGranted('USER_DELETE', $user);
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         if ($this->isCsrfTokenValid('delete' . $user->getId(), $request->request->get('_token'))) {
             $entityManager->remove($user);
