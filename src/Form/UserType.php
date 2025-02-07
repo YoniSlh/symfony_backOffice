@@ -17,7 +17,6 @@ class UserType extends AbstractType
     {
         $builder
             ->add('email', EmailType::class)
-            ->add('password', PasswordType::class)
             ->add('firstname')
             ->add('lastname')
             ->add('roles', ChoiceType::class, [
@@ -30,12 +29,17 @@ class UserType extends AbstractType
                 'expanded' => true,
                 'empty_data' => ['ROLE_USER'],
             ]);
+
+        if ($options['is_edit'] === false) {
+            $builder->add('password', PasswordType::class);
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => User::class,
+            'is_edit' => false,
         ]);
     }
 }
