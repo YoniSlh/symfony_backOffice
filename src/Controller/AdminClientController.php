@@ -18,7 +18,7 @@ class AdminClientController extends AbstractController
     public function index(ClientRepository $clientRepository): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
-        
+
         $clients = $clientRepository->findAll();
 
         return $this->render('admin_client/index.html.twig', [
@@ -32,6 +32,8 @@ class AdminClientController extends AbstractController
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         $client = new Client();
+        $client->setRole('ROLE_USER'); // rôle par défaut pour éviter erreur SQL
+
         $form = $this->createForm(ClientType::class, $client);
         $form->handleRequest($request);
 
@@ -47,11 +49,12 @@ class AdminClientController extends AbstractController
         ]);
     }
 
+
     #[Route('/edit/{id}', name: 'admin_clients_edit')]
     public function edit(Client $client, Request $request, EntityManagerInterface $entityManager): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
-        
+
         $form = $this->createForm(ClientType::class, $client);
         $form->handleRequest($request);
 

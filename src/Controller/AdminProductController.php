@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Service\CsvExporter;
 
 #[Route('/admin/products')]
 class AdminProductController extends AbstractController
@@ -83,5 +84,20 @@ class AdminProductController extends AbstractController
         }
 
         return $this->redirectToRoute('admin_products');
+    }
+
+    #[Route('/export', name: 'admin_products_export')]
+    public function exportCsv(CsvExporter $csvExporter, ProductRepository $productRepository): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        $products = $productRepository->findAll();
+        $csvContent = $csvExporter->export($products);
+
+        $response = new Response($csvContent);
+        $response->headers->set('Content-Type', 'text/csv');
+        $response->headers->set('Content-Disposition', 'attachment; filename="products.csv"');
+
+        return $response;
     }
 }

@@ -43,7 +43,8 @@
 						<tr class="hover:bg-gray-50">
 							<td class="px-4 py-2 border-b">{{ product.name }}</td>
 							<td class="px-4 py-2 border-b">{{ product.description }}</td>
-							<td class="px-4 py-2 border-b">{{ product.price }} €
+							<td class="px-4 py-2 border-b">{{ product.price }}
+								€
 							</td>
 							{% if is_granted('ROLE_ADMIN') %}
 								<td class="px-4 py-2 border-b flex space-x-2">
@@ -62,6 +63,18 @@
 					{% endfor %}
 				</tbody>
 			</table>
+		</div>
+		<br>
+		{# <div class="mb-4">
+			<form action="" method="post" enctype="multipart/form-data">
+				<label class="block text-gray-700 font-medium">Importer CSV</label>
+				<input type="file" name="csv_file" accept=".csv" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none">
+			</form>
+		</div> #}
+		<div class="mb-4">
+			<a href="{{ path('admin_products_export') }}" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+				Export CSV
+			</a>
 		</div>
 	</div>
 {% endblock %}
