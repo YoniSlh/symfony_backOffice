@@ -4,8 +4,11 @@ namespace App\Entity;
 
 use App\Repository\ClientRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ClientRepository::class)]
+#[UniqueEntity(fields: ['email'], message: 'Cet email est déjà utilisé.')]
 class Client
 {
     #[ORM\Id]
@@ -14,12 +17,18 @@ class Client
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    #[Assert\Regex(pattern: '/^[a-zA-ZÀ-ÿ-]+$/', message: 'Le prénom ne doit contenir que des lettres et des tirets.')]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    #[Assert\Regex(pattern: '/^[a-zA-ZÀ-ÿ-]+$/', message: 'Le nom ne doit contenir que des lettres et des tirets.')]
     private ?string $lastname = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    #[Assert\Email(message: 'L\'email n\'est pas valide.')]
     private ?string $email = null;
 
     #[ORM\Column(length: 255)]
@@ -29,7 +38,7 @@ class Client
     private ?int $phoneNumber = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $address = null;
+    private ?string $adress = null;
 
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
     private ?\DateTimeImmutable $createdAt = null;
@@ -47,7 +56,6 @@ class Client
     public function setFirstname(string $firstname): static
     {
         $this->firstname = $firstname;
-
         return $this;
     }
 
@@ -59,7 +67,6 @@ class Client
     public function setLastname(string $lastname): static
     {
         $this->lastname = $lastname;
-
         return $this;
     }
 
@@ -71,7 +78,6 @@ class Client
     public function setEmail(string $email): static
     {
         $this->email = $email;
-
         return $this;
     }
 
@@ -83,7 +89,6 @@ class Client
     public function setRole(string $role): self
     {
         $this->role = $role;
-
         return $this;
     }
 
@@ -95,19 +100,17 @@ class Client
     public function setPhoneNumber(?int $phoneNumber): static
     {
         $this->phoneNumber = $phoneNumber;
-
         return $this;
     }
 
-    public function getAddress(): ?string
+    public function getAdress(): ?string
     {
-        return $this->address;
+        return $this->adress;
     }
 
-    public function setAddress(?string $address): static
+    public function setAdress(?string $adress): static
     {
-        $this->address = $address;
-
+        $this->adress = $adress;
         return $this;
     }
 
@@ -119,7 +122,6 @@ class Client
     public function setCreatedAt(?\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
-
         return $this;
     }
 }

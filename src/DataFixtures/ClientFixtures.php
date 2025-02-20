@@ -15,7 +15,7 @@ class ClientFixtures extends Fixture
             ->setLastname('Collins')
             ->setEmail('user@example.com')
             ->setPhoneNumber('1234567890')
-            ->setAddress('123 Main St, City, Country')
+            ->setAdress('123 Main St, City, Country')
             ->setRole('ROLE_USER')
             ->setCreatedAt(new \DateTimeImmutable());
 
